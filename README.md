@@ -16,6 +16,10 @@ you could just use:
 str('Hi World')->slug()->upper()
 ```
 
+
+![screenshot](https://pbs.twimg.com/media/DPBjIqdWAAEvZcA.png)
+
+
 ## Install/Use
 You can install the package via composer locally in your project folder:
 
