@@ -17,8 +17,7 @@ class StrHelperTest extends TestCase
     {
         $this->assertEquals('Illuminate\Support\Str', get_class(str()));
     }
-    
-    
+
     /** @test */
     public function does_str_has_methods()
     {
@@ -27,25 +26,25 @@ class StrHelperTest extends TestCase
                 'str()->slug() does not exist!'
             );
     }
-    
+
     /** @test */
     public function str_will_cast_to_string()
     {
         $this->assertEquals('HI', str('hi')->upper());
     }
-    
+
     /** @test */
     public function str_check_methods_return_boolean()
     {
         $this->assertTrue(str('hi')->upper()->is('HI'));
     }
-    
+
     /** @test */
     public function str_methods_type_is_an_object()
     {
         $this->assertEquals('object', gettype(str('hi')->upper()));
     }
-    
+
     /** @test */
     public function str_get_method_type_is_a_string()
     {
