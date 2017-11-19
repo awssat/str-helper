@@ -16,8 +16,11 @@ you could just use:
 str('Hi World')->slug()->upper()
 ```
 
+<p align="center">
+  <img width="500"" src="https://pbs.twimg.com/media/DPBjIqdWAAEvZcA.png">
+</p>
 
-![screenshot](https://pbs.twimg.com/media/DPBjIqdWAAEvZcA.png)
+
 
 
 ## Install/Use
