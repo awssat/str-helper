@@ -4,7 +4,7 @@
     "keywords": [
         "string",
         "laravel",
-        "Support/Str",
+        "chain",
         "str"
     ],
     "homepage": "https://github.com/awssat/str-helper",
