@@ -1,0 +1,44 @@
+{
+    "name": "awssat/str-helper",
+    "description": "Simple and powerful Laravel Support/Str helper.",
+    "keywords": [
+        "string",
+        "laravel",
+        "Support/Str",
+        "str"
+    ],
+    "homepage": "https://github.com/awssat/str-helper",
+    "license": "MIT",
+    "authors": [{
+        "name": "Awssat",
+        "email": "hello@awssat.com"
+    }],
+
+    "require": {
+        "php": "~7.0",
+        "illuminate/support": "~5.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.4"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Awssat\\StrHelper\\": "src"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Awssat\\StrHelper\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
