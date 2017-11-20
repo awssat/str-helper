@@ -50,7 +50,7 @@ class StrHelperTest extends TestCase
     {
         $this->assertEquals('string', gettype(str('hi')->upper()->get()));
     }
-    
+
     /** @test */
     public function tap_works_fine()
     {
@@ -61,7 +61,7 @@ class StrHelperTest extends TestCase
              })->upper()
         );
     }
-    
+
     /** @test */
     public function do_can_bring_magic()
     {
@@ -72,7 +72,7 @@ class StrHelperTest extends TestCase
              })
         );
     }
-    
+
     /** @test */
     public function do_can_bring_magic_twice()
     {
