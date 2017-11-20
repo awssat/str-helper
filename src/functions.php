@@ -38,41 +38,46 @@ function str($value = null)
             } else {
                 throw new \Exception('Method ('.$methodName.') is not a valid Illuminate\Support\Str method!');
             }
-            
+
             if (gettype($result) !== 'string') {
                 return $result;
             }
-            
+
             $this->currentString = $result;
 
             return $this;
         }
 
         /**
-         * Get the processed string
-         * @return  string
+         * Get the processed string.
+         *
+         * @return string
          */
         public function get()
         {
             return $this->currentString;
         }
-        
+
         /**
          * Tap! Tap!
+         *
          * @param callable $callable
-         * @return  self|Illuminate\Support\Str
+         *
+         * @return self|Illuminate\Support\Str
          */
         public function tap($callback)
         {
             $callback($this->currentString);
-        
+
             return $this;
         }
-    
+
         /**
-         * Execute a callback on the string
-         * @param  callable $callable anonymous function, or name of a function
-         * @return  mixed|self|Illuminate\Support\Str
+         * Execute a callback on the string.
+         *
+         * @param callable $callable anonymous function, or name of a function
+         *
+         * @return mixed|self|Illuminate\Support\Str
          */
         public function do($callable)
         {
@@ -85,7 +90,7 @@ function str($value = null)
             }
 
             $this->currentString = $result;
-            
+
             return $this;
         }
 
