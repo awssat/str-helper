@@ -77,7 +77,7 @@ str('<a/>LINK.COM</a>')->finish('/')->do(function($v){ return strip_tags($v); })
 link.com/
 ```
 
-"do" can receive a other helpers/functions name too, for convenience
+"do" can receive other helpers/functions name too, for convenience
 ```bash
 str('<a/>LINK.COM</a>')->finish('/')->do('strip_tags')->lower()
 link.com/
