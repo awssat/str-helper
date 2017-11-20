@@ -50,4 +50,35 @@ class StrHelperTest extends TestCase
     {
         $this->assertEquals('string', gettype(str('hi')->upper()->get()));
     }
+    
+    /** @test */
+    public function tap_works_fine()
+    {
+        $this->assertEquals(
+            'HI',
+             str('hi')->tap(function ($value) {
+                 $value = 'welcome';
+             })->upper()
+        );
+    }
+    
+    /** @test */
+    public function do_can_bring_magic()
+    {
+        $this->assertEquals(
+            'hi',
+             str('<html>hi</html>')->do(function ($value) {
+                 return strip_tags($value);
+             })
+        );
+    }
+    
+    /** @test */
+    public function do_can_bring_magic_twice()
+    {
+        $this->assertEquals(
+            'hi',
+             str('<html>hi</html>')->do('strip_tags')
+        );
+    }
 }

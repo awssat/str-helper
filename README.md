@@ -65,7 +65,25 @@ if(str('Hi')->finish(' ZY')->lower()->get() == 'hi zy'){ echo 'yes'; }
 yes
 ```
 
-or you could just use it as an alias
+There is a "tap" method:
+```bash
+str('LINK.COM')->finish('/')->tap(function($v){ dd($v); })->lower()
+LINK.COM/
+```
+
+"do" method can be very helpful:
+```bash
+str('<a/>LINK.COM</a>')->finish('/')->do(function($v){ return strip_tags($v); })->lower()
+link.com/
+```
+
+"do" can receive a other helpers/functions name too, for convenience
+```bash
+str('<a/>LINK.COM</a>')->finish('/')->do('strip_tags')->lower()
+link.com/
+```
+
+or you could just use it as a short alias
 
 ```bash
 str()->slug('Hi World');
