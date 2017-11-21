@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/travis/awssat/str-helper/master.svg?style=flat-square)](https://travis-ci.org/awssat/str-helper)
 
 
-A powerful, yet simple str helper for Laravel. It gives you the magic of method chaining and it's easier and shorter to be included in views.
+⚡️  A flexible, simple & yet powerful string manipulation helper for Laravel. It gives you the magic of method chaining and it's easier and shorter to be included in views.
 
 Instead of using this in your view: 
 ```
@@ -56,38 +56,81 @@ str('العيد')->ascii();
 
 ```bash
 str('Hi Hello')->camel()->finish('::')->replaceLast(':', 'Z');
-= hiHello:Z
+>> hiHello:Z
 ```
 
 In case you want an explicit string value for conditions, use "get":
 ```bash
 if(str('Hi')->finish(' ZY')->lower()->get() == 'hi zy'){ echo 'yes'; }
-yes
+>> yes
+```
+
+You can plug php built in functions too
+```bash
+str('<a>LINK.COM</a>')->finish('/')->stripTags()->lower()
+>> link.com/
+```
+```bash
+str('<a>LINK.COM</a>')->finish('!')->strReplace('<a>', '<a href="http://example.com">')->lower()
+>> <a href="http://example.com">link.com</a>!
 ```
 
 There is a "tap" method:
 ```bash
 str('LINK.COM')->finish('/')->tap(function($v){ dd($v); })->lower()
-LINK.COM/
+>> LINK.COM/
 ```
 
-"do" method can be very helpful:
+for callbacks use "do" method:
 ```bash
-str('<a/>LINK.COM</a>')->finish('/')->do(function($v){ return strip_tags($v); })->lower()
-link.com/
+str('<a>LINK.COM</a>')->finish('/')->do(function($v){ return strip_tags($v); })->lower()
+>> link.com/
 ```
 
-"do" can receive other helpers/functions name too, for convenience
-```bash
-str('<a/>LINK.COM</a>')->finish('/')->do('strip_tags')->lower()
-link.com/
+You can also use conditions, if(..), else(), endif() 
+```php
+str('<html>hi</html>')
+            ->ifStrReplace('hi', 'welcome')
+            ->upper();
+>> <HTML>WELCOME</HTML>       
 ```
 
-or you could just use it as a short alias
+```php
+str('<html>HOWDY</html>')
+            ->ifStrReplace('hi', 'welcome')
+                ->upper()
+            ->endif()
+            ->stripTags()
+            ->lower();
+            
+>> howdy
+```
 
+
+Or you could just use str() it as a short alias for Illuminate/Support/Str class if you pass nothing to it:
 ```bash
 str()->slug('Hi World');
-= hi-world
+>> hi-world
+```
+
+
+### Full example with collection:
+```php
+$names = collect([
+            '<a href="url" rel="nofollow">page1</a>',
+            '<a href="url">page2</a>',
+            '<a href="url">page3</a>',
+            '<a href="url">page4 : {name}</a>',
+        ]);
+
+$names = $names->map(function ($name) {
+    return str($name)
+            ->ifContains('nofollow')->StrReplace('page1', 'nofollow PAGE')->lower()
+            ->else()->stripTags()->pregReplace('!{name}!', 'articles')
+            ->endif()
+            ->finish('!')
+            ->get();
+});
 ```
 
 
