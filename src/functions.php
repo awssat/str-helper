@@ -1,4 +1,5 @@
 <?php
+
 use Awssat\StrHelper\StrHelper;
 
 /**
