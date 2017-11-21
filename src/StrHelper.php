@@ -9,7 +9,7 @@ class StrHelper
     protected $falseElseTriggered = false;
 
     /**
-     * Initate the class
+     * Initate the class.
      *
      * @param string $value given string
      */
@@ -19,7 +19,7 @@ class StrHelper
     }
 
     /**
-     * The door to the magic
+     * The door to the magic.
      *
      * @param string $methodName name of called method
      * @param array  $arguments  arguments of called method
