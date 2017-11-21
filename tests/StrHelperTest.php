@@ -81,7 +81,7 @@ class StrHelperTest extends TestCase
              str('<html>hi</html>')->do('strip_tags')
         );
     }
-
+    
     /** @test */
     public function do_can_bring_magic_even_better()
     {
@@ -90,27 +90,28 @@ class StrHelperTest extends TestCase
              str('<b>boo</b>')->stripTags()
         );
     }
-
+    
+    
     /** @test */
     public function test_if_with_built_in_functions()
     {
         $result = str('<html>hi</html>')
                     ->ifStrReplace('hi', 'welcome')
                         ->upper();
-
+                        
         $this->assertEquals('<HTML>WELCOME</HTML>', $result);
     }
-
+    
     /** @test */
     public function test_if2_with_built_in_functions()
     {
         $result = str('<html>howdy</html>')
                     ->ifStrReplace('hi', 'welcome')
                         ->upper();
-
+                        
         $this->assertEquals('<html>howdy</html>', $result);
     }
-
+    
     /** @test */
     public function test_if_endif_with_built_in_functions()
     {
@@ -120,15 +121,17 @@ class StrHelperTest extends TestCase
                     ->endif()
                     ->stripTags()
                     ->lower();
+                    
 
         $this->assertEquals('howdy', $result);
     }
-
+    
+    
     /** @test */
     public function test_if_else_endif_with_built_in_functions()
     {
         $result = [];
-
+    
         foreach (['hi', 'WELCOME'] as $word) {
             $result[] = str($word)
                         ->ifContains('hi')
@@ -143,7 +146,8 @@ class StrHelperTest extends TestCase
 
         $this->assertEquals('HI you :) welcome aboard :)', implode(' ', $result));
     }
-
+    
+    
     /** @test */
     public function test_built_in_functions()
     {
@@ -151,27 +155,27 @@ class StrHelperTest extends TestCase
                 'strpos' => [
                     'wife', //str
                      ['i'], //params
-                     '1',     //expectted
+                     '1'     //expectted
                     ],
                 'strReplace' => [
                     'once',
                      ['c', 'z'],
-                     'onze',
+                     'onze'
                 ],
                 'str_replace' => [
                     'twice',
                      ['c', 'x'],
-                     'twixe',
+                     'twixe'
                 ],
                 'strrchr' => [
                     'life is an illusion',
                      ['a'],
-                     'an illusion',
+                     'an illusion'
                 ],
                 'explode' => [
                     'a b c d',
                      [' '],
-                     function_exists('collect') ? collect(['a', 'b', 'c', 'd']) : ['a', 'b', 'c', 'd'],
+                     function_exists('collect') ? collect(['a', 'b', 'c', 'd']) : ['a', 'b', 'c', 'd']
                 ],
            ] as $func=>$data) {
             $this->assertEquals($data[2], str($data[0])->{$func}(...$data[1]));
