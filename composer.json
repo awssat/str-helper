@@ -1,10 +1,11 @@
 {
     "name": "awssat/str-helper",
-    "description": "Simple and powerful Laravel Support/Str helper.",
+    "description": "A flexible & powerful string manipulation helper for Laravel",
     "keywords": [
         "string",
         "laravel",
-        "chain",
+        "manipulation",
+        "helper",
         "str"
     ],
     "homepage": "https://github.com/awssat/str-helper",

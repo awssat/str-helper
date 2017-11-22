@@ -13,6 +13,23 @@ class StrHelperTest extends TestCase
     }
 
     /** @test */
+    public function str_can_take_numbers()
+    {
+        $this->assertEquals('1', str(1));
+    }
+
+    /** @test */
+    public function str_can_take_objects_that_can_be_string()
+    {
+        $this->assertEquals('x', new class {
+            public function __toString()
+            {
+                return 'x';
+            }
+        });
+    }
+
+    /** @test */
     public function empty_str_object_type_is_valid()
     {
         $this->assertEquals('Illuminate\Support\Str', get_class(str()));
@@ -173,7 +190,7 @@ class StrHelperTest extends TestCase
                      [' '],
                      function_exists('collect') ? collect(['a', 'b', 'c', 'd']) : ['a', 'b', 'c', 'd'],
                 ],
-           ] as $func=>$data) {
+           ] as $func => $data) {
             $this->assertEquals($data[2], str($data[0])->{$func}(...$data[1]));
         }
     }
