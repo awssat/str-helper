@@ -52,13 +52,13 @@ class StrHelper
                 array_unshift($arguments, $this->currentString);
             }
 
-            $result = call_user_func_array('Illuminate\Support\Str::' . $methodName, $arguments);
+            $result = call_user_func_array('Illuminate\Support\Str::'.$methodName, $arguments);
         } elseif (function_exists(str($methodName)->snake()->get())) {
             // Regualr functions -> do(methodName, ...)
             return $this->do(str($methodName)->snake()->get(), ...$arguments);
         } else {
             // Couldn't find either?
-            throw new \Exception('Method (' . $methodName . ') is not a valid Illuminate\Support\Str method!');
+            throw new \Exception('Method ('.$methodName.') is not a valid Illuminate\Support\Str method!');
         }
 
         //if not a string, return the result,  array is converted to collection
@@ -121,7 +121,7 @@ class StrHelper
             $functionInfo = new \ReflectionFunction($callable);
 
             if ($functionInfo->isDeprecated() || $functionInfo->isDisabled()) {
-                throw new \Exception('Method (' . $callable . ') is disabled or deprecated!');
+                throw new \Exception('Method ('.$callable.') is disabled or deprecated!');
             }
 
             if ($functionInfo->getNumberOfParameters() > 1) {

@@ -21,7 +21,7 @@ class StrHelperTest extends TestCase
     /** @test */
     public function str_can_take_objects_that_can_be_string()
     {
-        $this->assertEquals('x', new class {
+        $this->assertEquals('x', new class() {
             public function __toString()
             {
                 return 'x';
