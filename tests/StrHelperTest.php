@@ -2,8 +2,8 @@
 
 namespace Awssat\StrHelper\Test;
 
-use PHPUnit\Framework\TestCase;
 use Illuminate\Support\Collection;
+use PHPUnit\Framework\TestCase;
 
 class StrHelperTest extends TestCase
 {
