@@ -16,10 +16,10 @@ you could just use:
 str('Hi World')->slug()->upper()
 ```
 
+
 <p align="center">
   <img width="500"" src="https://pbs.twimg.com/media/DPBjIqdWAAEvZcA.png">
 </p>
-
 
 
 
@@ -33,25 +33,26 @@ $ composer require awssat/str-helper
 After installing it, just start using the helper `str()`: 
 
 ## Examples
-```bash
-str('Hi Hello')->slug()->limit(2)->contains('l');
-= false
-```
-
-```bash
-str('Hi Hello')->slug()->contains('-');
-= true
-```
 
 ```bash 
 str('Hi Hello')->slug();
-= hi-hello
+>> hi-hello
+```
+
+```bash
+str('Hi Hello')->slug()->limit(2)->contains('l');
+>> false
 ```
 
 
+```bash
+str('Hi Hello')->slug()->contains('-');
+>> true
+```
+
 ```bash 
 str('العيد')->ascii();
-= alaayd
+>> alaayd
 ```
 
 ```bash
@@ -83,9 +84,18 @@ str('LINK.COM')->finish('/')->tap(function($v){ dd($v); })->lower()
 
 for callbacks use "do" method:
 ```bash
-str('<a>LINK.COM</a>')->finish('/')->do(function($v){ return strip_tags($v); })->lower()
+str('<a>link.com</a>')->finish('/')->do(function($obj, $string){ 
+        return strip_tags($string); 
+})
 >> link.com/
 ```
+```bash
+str('<a>link.com</a>')->finish('/')->do(function($obj){   
+        return $obj->stripTags(); 
+})
+>> link.com/
+```
+
 
 You can also use conditions, if(..), else(), endif() 
 ```php
@@ -139,6 +149,9 @@ Simply use:
 ```bash
 $ composer test
 ```
+## Credits
+- [Abdulrahman M.](https://github.com/abdumu)
+- [All Contributors](../../contributors)
 
 ## License
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

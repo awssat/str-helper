@@ -2,6 +2,8 @@
 
 namespace Awssat\StrHelper;
 
+use Illuminate\Support\Collection;
+
 class StrHelper
 {
     protected $currentString = '';
@@ -28,7 +30,7 @@ class StrHelper
      */
     public function __call($methodName, $arguments)
     {
-        //nothing to do, false ondition was triggered
+        //nothing to do, false condition was triggered
         if ($this->falseIfTriggered || $this->falseElseTriggered) {
             return $this;
         }
@@ -44,8 +46,9 @@ class StrHelper
             );
         }
 
-        // Str methods
         if (method_exists('Illuminate\Support\Str', $methodName)) {
+            // Str methods
+
             if (in_array($methodName, ['replaceLast', 'replaceFirst', 'replaceArray', 'is'])) {
                 array_push($arguments, $this->currentString);
             } else {
@@ -53,17 +56,17 @@ class StrHelper
             }
 
             $result = call_user_func_array('Illuminate\Support\Str::'.$methodName, $arguments);
-        } elseif (function_exists(str($methodName)->snake()->get())) {
+        } elseif (function_exists((new self($methodName))->snake()->get())) {
             // Regualr functions -> do(methodName, ...)
-            return $this->do(str($methodName)->snake()->get(), ...$arguments);
+            return $this->do((new self($methodName))->snake()->get(), ...$arguments);
         } else {
             // Couldn't find either?
-            throw new \Exception('Method ('.$methodName.') is not a valid Illuminate\Support\Str method!');
+            throw new \BadMethodCallException('Method ('.$methodName.') is not a valid Illuminate\Support\Str method!');
         }
 
         //if not a string, return the result,  array is converted to collection
         if (gettype($result) !== 'string') {
-            return is_array($result) ? collect($result) : $result;
+            return is_array($result) ? Collection::wrap($result) : $result;
         }
 
         $this->currentString = $result;
@@ -105,14 +108,19 @@ class StrHelper
      */
     public function do($callable, ...$args)
     {
-        //nothing to do, false ondition was triggered
+        //nothing to do, false condition was triggered here too
         if ($this->falseIfTriggered || $this->falseElseTriggered) {
             return $this;
         }
 
-        //anonymose
         if ($callable instanceof \Closure) {
-            $result = $callable($this->currentString);
+            //anonymose
+
+            $result = $callable(new self($this->currentString), $this->currentString);
+
+            if (\is_object($result) && is_a($result, __CLASS__)) {
+                $result = $result->get();
+            }
         } elseif (function_exists($callable)) {
             //regular functions
 
@@ -120,9 +128,9 @@ class StrHelper
             //and where is the position of the string value among the params
             $functionInfo = new \ReflectionFunction($callable);
 
-            if ($functionInfo->isDeprecated() || $functionInfo->isDisabled()) {
-                throw new \Exception('Method ('.$callable.') is disabled or deprecated!');
-            }
+            // if ($functionInfo->isDeprecated() || $functionInfo->isDisabled()) {
+            //     throw new \BadFunctionCallException('Function ('.$callable.') is disabled or deprecated!');
+            // }
 
             if ($functionInfo->getNumberOfParameters() > 1) {
                 $stringIndex = 0;
@@ -144,11 +152,11 @@ class StrHelper
                 $result = $callable();
             }
         } else {
-            throw new \Exception('Method (do) can only receive anonymous functions/functions!');
+            throw new \InvalidArgumentException('Method (do) can only receive anonymous functions or regular (bulit-in/global) functions!');
         }
 
         if (gettype($result) !== 'string') {
-            return is_array($result) ? collect($result) : $result;
+            return is_array($result) ? Collection::wrap($result) : $result;
         }
 
         $this->currentString = $result;

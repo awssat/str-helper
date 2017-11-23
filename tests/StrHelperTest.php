@@ -3,19 +3,26 @@
 namespace Awssat\StrHelper\Test;
 
 use PHPUnit\Framework\TestCase;
+use Illuminate\Support\Collection;
 
 class StrHelperTest extends TestCase
 {
     /** @test */
-    public function empty_str_return_an_object()
+    public function empty_str_return_an_instance_of_support_str()
     {
-        $this->assertEquals('object', gettype(str()));
+        $this->assertEquals('Illuminate\Support\Str', \get_class(str()));
     }
 
     /** @test */
     public function str_can_take_numbers()
     {
         $this->assertEquals('1', str(1));
+    }
+
+    /** @test */
+    public function str_can_take_booleans()
+    {
+        $this->assertEquals('', str(false));
     }
 
     /** @test */
@@ -84,8 +91,19 @@ class StrHelperTest extends TestCase
     {
         $this->assertEquals(
             'hi',
-             str('<html>hi</html>')->do(function ($value) {
-                 return strip_tags($value);
+             str('<html>hi</html>')->do(function ($obj, $string) {
+                 return strip_tags($string);
+             })
+        );
+    }
+
+    /** @test */
+    public function do_can_bring_magic_once()
+    {
+        $this->assertEquals(
+            'hi2',
+             str('<html>hi2</html>')->do(function ($obj) {
+                 return $obj->stripTags();
              })
         );
     }
@@ -188,10 +206,30 @@ class StrHelperTest extends TestCase
                 'explode' => [
                     'a b c d',
                      [' '],
-                     function_exists('collect') ? collect(['a', 'b', 'c', 'd']) : ['a', 'b', 'c', 'd'],
+                     Collection::wrap(['a', 'b', 'c', 'd']),
                 ],
            ] as $func => $data) {
             $this->assertEquals($data[2], str($data[0])->{$func}(...$data[1]));
         }
+    }
+
+    /** @test */
+    public function str_return_collection_instead_of_array()
+    {
+        $this->assertEquals('Illuminate\Support\Collection', get_class(str('you|money|peach')->explode('|')));
+    }
+
+    /** @test */
+    public function str_throw_exception_if_given_wrong_method()
+    {
+        $this->expectException(\BadMethodCallException::class);
+        str('If it is complicated, then you are doing it wrong!')->callMama();
+    }
+
+    /** @test */
+    public function str_do_throw_exception_if_given_no_function()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        str('Go Duck Yourself')->do('hi');
     }
 }
