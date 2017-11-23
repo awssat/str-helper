@@ -206,7 +206,7 @@ class StrHelperTest extends TestCase
                 'explode' => [
                     'a b c d',
                      [' '],
-                     Collection::wrap(['a', 'b', 'c', 'd']),
+                     new Collection(['a', 'b', 'c', 'd']),
                 ],
            ] as $func => $data) {
             $this->assertEquals($data[2], str($data[0])->{$func}(...$data[1]));

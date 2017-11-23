@@ -66,7 +66,7 @@ class StrHelper
 
         //if not a string, return the result,  array is converted to collection
         if (gettype($result) !== 'string') {
-            return is_array($result) ? Collection::wrap($result) : $result;
+            return is_array($result) ? new Collection($result) : $result;
         }
 
         $this->currentString = $result;
@@ -156,7 +156,7 @@ class StrHelper
         }
 
         if (gettype($result) !== 'string') {
-            return is_array($result) ? Collection::wrap($result) : $result;
+            return is_array($result) ? new Collection($result) : $result;
         }
 
         $this->currentString = $result;
