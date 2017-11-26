@@ -2,9 +2,10 @@
 
 namespace Awssat\StrHelper;
 
+use Countable;
 use Illuminate\Support\Collection;
 
-class StrHelper
+class StrHelper implements Countable
 {
     protected $currentString = '';
     protected $falseIfTriggered = false;
@@ -226,5 +227,15 @@ class StrHelper
     public function __toString()
     {
         return $this->currentString;
+    }
+
+    /**
+     * Return the length of the processed string
+     * 
+     * @return int 
+     */
+    public function count()
+    {
+        return $this->length();
     }
 }

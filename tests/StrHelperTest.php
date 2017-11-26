@@ -232,4 +232,11 @@ class StrHelperTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         str('Go Duck Yourself')->do('hi');
     }
+
+
+    /** @test */
+    public function str_can_be_counted()
+    {
+        $this->assertEquals(5, count(str('Nomad')->slug()));
+    }
 }
