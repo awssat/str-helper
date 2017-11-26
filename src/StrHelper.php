@@ -230,9 +230,9 @@ class StrHelper implements Countable
     }
 
     /**
-     * Return the length of the processed string
-     * 
-     * @return int 
+     * Return the length of the processed string.
+     *
+     * @return int
      */
     public function count()
     {
