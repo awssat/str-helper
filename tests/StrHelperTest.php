@@ -233,7 +233,6 @@ class StrHelperTest extends TestCase
         str('Go Duck Yourself')->do('hi');
     }
 
-
     /** @test */
     public function str_can_be_counted()
     {
