@@ -103,7 +103,7 @@ class StrHelperTest extends TestCase
         $this->assertEquals(
             'hi2',
              str('<html>hi2</html>')->do(function () {
-                  $this->stripTags();
+                 $this->stripTags();
              })
         );
     }
