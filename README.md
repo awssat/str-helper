@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/travis/awssat/str-helper/master.svg?style=flat-square)](https://travis-ci.org/awssat/str-helper)
 
 
-⚡️  A flexible, simple & yet powerful string manipulation helper for Laravel. It gives you the magic of method chaining and it's easier and shorter to be included in views.
+⚡️  A flexible, simple & yet powerful string manipulation helper for Laravel. It gives you the magic of method chaining and it's easier and shorter to be included in views. Supports Laravel String helpers & [PHP built-in strings functions](http://php.net/manual/en/book.strings.php).
 
 Instead of using this in your view: 
 ```
@@ -84,20 +84,33 @@ str('LINK.COM')->finish('/')->tap(function($v){ dd($v); })->lower()
 
 for callbacks use "do" method:
 ```bash
-str('<a>link.com</a>')->finish('/')->do(function($obj, $string){ 
+str('<a>link.com</a>')->finish('/')->do(function($string){ 
         return strip_tags($string); 
 })
 >> link.com/
 ```
+
 ```bash
-str('<a>link.com</a>')->finish('/')->do(function($obj){   
-        return $obj->stripTags(); 
+str('<a>link.com</a>')->do(function(){   
+        $this->stripTags(); 
+        $this->finish('/');
 })
 >> link.com/
 ```
 
+Any resulted array from functions will be converted to a collection for convenience 
+```bash
+str('hellow|world')->
+                ifExplode('|')
+                ->each(function($item){
+                         echo '[' . $item . ']';
+                });
 
-You can also use conditions, if(..), else(), endif() 
+>> [hello][world]
+```
+
+
+You can also use conditions, if(..), else(), endif()
 ```php
 str('<html>hi</html>')
             ->ifStrReplace('hi', 'welcome')
@@ -107,13 +120,23 @@ str('<html>hi</html>')
 
 ```php
 str('<html>HOWDY</html>')
-            ->ifStrReplace('hi', 'welcome')
+            ->ifStrReplace('hi', 'welcome') //or if_str_replace(...)
                 ->upper()
             ->endif()
             ->stripTags()
             ->lower();
             
 >> howdy
+```
+
+Can take an anonymous function
+```php
+str('<html>hi</html>')
+            ->if(function(){
+                    return $this->contains('hi');
+            })
+            ->upper();
+>> <HTML>HI</HTML>       
 ```
 
 

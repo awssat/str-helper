@@ -91,7 +91,7 @@ class StrHelperTest extends TestCase
     {
         $this->assertEquals(
             'hi',
-             str('<html>hi</html>')->do(function ($obj, $string) {
+             str('<html>hi</html>')->do(function ($string) {
                  return strip_tags($string);
              })
         );
@@ -102,8 +102,8 @@ class StrHelperTest extends TestCase
     {
         $this->assertEquals(
             'hi2',
-             str('<html>hi2</html>')->do(function ($obj) {
-                 return $obj->stripTags();
+             str('<html>hi2</html>')->do(function () {
+                  $this->stripTags();
              })
         );
     }

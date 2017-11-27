@@ -31,20 +31,20 @@ class StrHelper implements Countable
      */
     public function __call($methodName, $arguments)
     {
-        //nothing to do, false condition was triggered
-        if ($this->falseIfTriggered || $this->falseElseTriggered) {
-            return $this;
-        }
-
         // in case of if{method}()
         if (substr($methodName, 0, 2) === 'if') {
             $methodName = ltrim(substr($methodName, 2), '_');
 
             return $this->if(
-                function ($v) use ($methodName, $arguments) {
+                function () use ($methodName, $arguments) {
                     return $this->$methodName(...$arguments);
                 }
             );
+        }
+
+        //nothing to do, false condition was triggered
+        if ($this->falseIfTriggered || $this->falseElseTriggered) {
+            return $this;
         }
 
         if (method_exists('Illuminate\Support\Str', $methodName)) {
@@ -85,6 +85,19 @@ class StrHelper implements Countable
         return $this->currentString;
     }
 
+     /**
+     * set current string.
+     *
+     * @return string
+     */
+    public function set($value)
+    {
+        $this->currentString = (string) $value;
+
+        return $this;
+    }
+
+
     /**
      * Tap! Tap!
      *
@@ -117,11 +130,15 @@ class StrHelper implements Countable
         if ($callable instanceof \Closure) {
             //anonymose
 
-            $result = $callable(new self($this->currentString), $this->currentString);
+            $callable = $callable->bindTo($this);
+            $result = ($callable->bindTo($this))($this->currentString);
 
             if (\is_object($result) && is_a($result, __CLASS__)) {
                 $result = $result->get();
+            } elseif($result === null){
+                return $this;
             }
+
         } elseif (function_exists($callable)) {
             //regular functions
 
@@ -129,15 +146,11 @@ class StrHelper implements Countable
             //and where is the position of the string value among the params
             $functionInfo = new \ReflectionFunction($callable);
 
-            // if ($functionInfo->isDeprecated() || $functionInfo->isDisabled()) {
-            //     throw new \BadFunctionCallException('Function ('.$callable.') is disabled or deprecated!');
-            // }
-
             if ($functionInfo->getNumberOfParameters() > 1) {
                 $stringIndex = 0;
 
                 foreach ($functionInfo->getParameters() as $order => $arg) {
-                    if (in_array($arg->name, ['str', 'string', 'subject', 'haystack'])) {
+                    if (in_array($arg->name, ['str', 'string', 'subject', 'haystack', 'body'])) {
                         $stringIndex = $order;
                         break;
                     }
@@ -175,6 +188,8 @@ class StrHelper implements Countable
      */
     public function if($callable, ...$args)
     {
+        $this->falseIfTriggered = false;
+
         $lastString = $this->currentString;
 
         $result = $this->do($callable, ...$args);
@@ -189,6 +204,8 @@ class StrHelper implements Countable
 
         return $this;
     }
+
+
 
     /**
      * End the If condition.
@@ -226,7 +243,7 @@ class StrHelper implements Countable
      */
     public function __toString()
     {
-        return $this->currentString;
+        return (string) $this->currentString;
     }
 
     /**
