@@ -85,7 +85,7 @@ class StrHelper implements Countable
         return $this->currentString;
     }
 
-     /**
+    /**
      * set current string.
      *
      * @return string
@@ -96,7 +96,6 @@ class StrHelper implements Countable
 
         return $this;
     }
-
 
     /**
      * Tap! Tap!
@@ -135,10 +134,9 @@ class StrHelper implements Countable
 
             if (\is_object($result) && is_a($result, __CLASS__)) {
                 $result = $result->get();
-            } elseif($result === null){
+            } elseif ($result === null) {
                 return $this;
             }
-
         } elseif (function_exists($callable)) {
             //regular functions
 
@@ -204,8 +202,6 @@ class StrHelper implements Countable
 
         return $this;
     }
-
-
 
     /**
      * End the If condition.
