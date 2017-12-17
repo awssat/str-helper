@@ -130,10 +130,11 @@ class StrHelperTest extends TestCase
     public function test_if_with_built_in_functions()
     {
         $result = str('<html>hi</html>')
-                    ->ifStrReplace('hi', 'welcome')
-                        ->upper();
+                    ->ifStrpos('hi')
+                        ->upper()
+                    ->endif();
 
-        $this->assertEquals('<HTML>WELCOME</HTML>', $result);
+        $this->assertEquals('<HTML>HI</HTML>', $result);
     }
 
     /** @test */

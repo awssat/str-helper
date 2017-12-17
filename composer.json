@@ -1,6 +1,6 @@
 {
     "name": "awssat/str-helper",
-    "description": "A flexible & powerful string manipulation helper for Laravel",
+    "description": "A flexible & powerful string manipulation helper for PHP",
     "keywords": [
         "string",
         "laravel",
@@ -16,11 +16,11 @@
     }],
 
     "require": {
-        "php": "~7.0",
-        "illuminate/support": "5.4.* || 5.5.*"
+        "php": "~7.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.4"
+        "phpunit/phpunit": "^6.4",
+        "illuminate/support": "5.4.* || 5.5.*"
     },
 
     "autoload": {

@@ -5,15 +5,11 @@
 [![Build Status](https://img.shields.io/travis/awssat/str-helper/master.svg?style=flat-square)](https://travis-ci.org/awssat/str-helper)
 
 
-⚡️  A flexible, simple & yet powerful string manipulation helper for Laravel. It gives you the magic of method chaining and it's easier and shorter to be included in views. Supports Laravel String helpers & [PHP built-in strings functions](http://php.net/manual/en/book.strings.php).
+⚡️  A flexible, simple & yet powerful string manipulation helper for PHP. It gives you the magic of method chaining and it's easier and shorter to be included in views. It Supports most of [PHP built-in strings functions](http://php.net/manual/en/book.strings.php) (and any custom functions).
 
-Instead of using this in your view: 
-```
-Illuminate\Support\Str::upper(Illuminate\Support\Str::slug('Hi World'))
-``` 
-you could just use:
+
 ```php
-str('Hi World')->slug()->upper()
+str('Hi World')->strReplace(' ', '+')->strtolower()
 ```
 
 
@@ -35,24 +31,14 @@ After installing it, just start using the helper `str()`:
 ## Examples
 
 ```bash 
-str('Hi Hello')->slug();
+str('Hi Hello')->strReplace(' ', '-');
 >> hi-hello
 ```
 
+if used with Laravel, you could use its string helpers:
 ```bash
 str('Hi Hello')->slug()->limit(2)->contains('l');
 >> false
-```
-
-
-```bash
-str('Hi Hello')->slug()->contains('-');
->> true
-```
-
-```bash 
-str('العيد')->ascii();
->> alaayd
 ```
 
 ```bash
@@ -62,46 +48,35 @@ str('Hi Hello')->camel()->finish('::')->replaceLast(':', 'Z');
 
 In case you want an explicit string value for conditions, use "get":
 ```bash
-if(str('Hi')->finish(' ZY')->lower()->get() == 'hi zy'){ echo 'yes'; }
+if(str('Hi')->strtolower->get() == 'hi'){ echo 'yes'; }
 >> yes
 ```
 
-You can plug php built in functions too
-```bash
-str('<a>LINK.COM</a>')->finish('/')->stripTags()->lower()
->> link.com/
-```
-```bash
-str('<a>LINK.COM</a>')->finish('!')->strReplace('<a>', '<a href="http://example.com">')->lower()
->> <a href="http://example.com">link.com</a>!
-```
 
 There is a "tap" method:
 ```bash
-str('LINK.COM')->finish('/')->tap(function($v){ dd($v); })->lower()
->> LINK.COM/
+str('LINK.COM')->tap(function($v){ exit($v); })->lower()
+>> LINK.COM
 ```
 
 for callbacks use "do" method:
 ```bash
-str('<a>link.com</a>')->finish('/')->do(function($string){ 
+str('<a>link.com</a>')->do(function($string){ 
         return strip_tags($string); 
 })
->> link.com/
+>> link.com
 ```
-
+or: 
 ```bash
 str('<a>link.com</a>')->do(function(){   
-        $this->stripTags(); 
-        $this->finish('/');
+        $this->stripTags();
 })
 >> link.com/
 ```
 
-Any resulted array from functions will be converted to a collection for convenience 
+If used with Laravel, Any resulted array will be converted to a collection for convenience 
 ```bash
-str('hellow|world')->
-                ifExplode('|')
+str('hellow|world')->explode('|')
                 ->each(function($item){
                          echo '[' . $item . ']';
                 });
@@ -113,58 +88,22 @@ str('hellow|world')->
 You can also use conditions, if(..), else(), endif()
 ```php
 str('<html>hi</html>')
-            ->ifStrReplace('hi', 'welcome')
-            ->upper();
->> <HTML>WELCOME</HTML>       
+            ->ifStrpos('hi')
+            ->strtoupper();
+>> <HTML>HI</HTML>       
 ```
 
-```php
-str('<html>HOWDY</html>')
-            ->ifStrReplace('hi', 'welcome') //or if_str_replace(...)
-                ->upper()
-            ->endif()
-            ->stripTags()
-            ->lower();
-            
->> howdy
-```
 
-Can take an anonymous function
+if can take an anonymous function
 ```php
 str('<html>hi</html>')
             ->if(function(){
                     return $this->contains('hi');
             })
-            ->upper();
+            ->strtoupper();
 >> <HTML>HI</HTML>       
 ```
 
-
-Or you could just use str() it as a short alias for Illuminate/Support/Str class if you pass nothing to it:
-```bash
-str()->slug('Hi World');
->> hi-world
-```
-
-
-### Full example with collection:
-```php
-$names = collect([
-            '<a href="url" rel="nofollow">page1</a>',
-            '<a href="url">page2</a>',
-            '<a href="url">page3</a>',
-            '<a href="url">page4 : {name}</a>',
-        ]);
-
-$names = $names->map(function ($name) {
-    return str($name)
-            ->ifContains('nofollow')->StrReplace('page1', 'nofollow PAGE')->lower()
-            ->else()->stripTags()->pregReplace('!{name}!', 'articles')
-            ->endif()
-            ->finish('!')
-            ->get();
-});
-```
 
 
 ## Tests

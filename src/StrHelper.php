@@ -3,16 +3,19 @@
 namespace Awssat\StrHelper;
 
 use Countable;
-use Illuminate\Support\Collection;
 
 class StrHelper implements Countable
 {
     protected $currentString = '';
-    protected $falseIfTriggered = false;
-    protected $falseElseTriggered = false;
+    protected $conditionDepth = 0;
+    protected $falseIfTriggered = [];
+    protected $falseElseTriggered = [];
+    protected $isIf = [];
+    protected $isElse = [];
+    protected $insideIfCondition = false;
 
     /**
-     * Initate the class.
+     * Initiate the class.
      *
      * @param string $value given string
      */
@@ -43,11 +46,17 @@ class StrHelper implements Countable
         }
 
         //nothing to do, false condition was triggered
-        if ($this->falseIfTriggered || $this->falseElseTriggered) {
+        if ($this->skipIfTriggered() && ! $this->insideIfCondition) {
             return $this;
         }
 
-        if (method_exists('Illuminate\Support\Str', $methodName)) {
+
+        $snake_method_name = preg_replace('/([a-z]{1})([A-Z]{1})/', '$1_$2', $methodName);
+
+        if (
+            class_exists('\\Illuminate\\Support\\Str') &&
+            method_exists('Illuminate\Support\Str', $methodName)
+            ) {
             // Str methods
 
             if (in_array($methodName, ['replaceLast', 'replaceFirst', 'replaceArray', 'is'])) {
@@ -57,17 +66,30 @@ class StrHelper implements Countable
             }
 
             $result = call_user_func_array('Illuminate\Support\Str::'.$methodName, $arguments);
-        } elseif (function_exists((new self($methodName))->snake()->get())) {
-            // Regualr functions -> do(methodName, ...)
-            return $this->do((new self($methodName))->snake()->get(), ...$arguments);
+        } elseif (function_exists($snake_method_name)) {
+            // Regular functions -> do(methodName, ...)
+            return $this->do($snake_method_name, ...$arguments);
         } else {
             // Couldn't find either?
             throw new \BadMethodCallException('Method ('.$methodName.') is not a valid Illuminate\Support\Str method!');
         }
 
         //if not a string, return the result,  array is converted to collection
-        if (gettype($result) !== 'string') {
-            return is_array($result) ? new Collection($result) : $result;
+        if (
+            gettype($result) !== 'string' && 
+            ! (isset($this->isIf[$this->conditionDepth]) && $this->isIf[$this->conditionDepth]) &&
+            ! (isset($this->isElse[$this->conditionDepth]) && $this->isElse[$this->conditionDepth])
+        ) {
+
+            if (is_array($result) && class_exists('\\Illuminate\\Support\\Collection')) {
+                return new \Illuminate\Support\Collection($result);
+            }
+
+            return $result;
+        }
+
+        if($this->insideIfCondition){
+            return $result;
         }
 
         $this->currentString = $result;
@@ -82,6 +104,10 @@ class StrHelper implements Countable
      */
     public function get()
     {
+        if ($this->skipIfTriggered()) {
+            return $this;
+        }
+        
         return $this->currentString;
     }
 
@@ -92,6 +118,10 @@ class StrHelper implements Countable
      */
     public function set($value)
     {
+        if ($this->skipIfTriggered()) {
+            return $this;
+        }
+     
         $this->currentString = (string) $value;
 
         return $this;
@@ -111,6 +141,27 @@ class StrHelper implements Countable
         return $this;
     }
 
+
+    protected function skipIfTriggered($condition = null)
+    {
+        if($this->conditionDepth === 0){
+            return false;
+        }
+
+        if($condition === null){
+            $condition = $this->conditionDepth;
+            if($condition > 1 && $this->skipIfTriggered($condition - 1)){
+                return true;
+            }
+        }
+
+
+        $isIf = $this->isIf[$condition] && $this->falseIfTriggered[$condition];
+        $isElse = $this->isElse[$condition] && $this->falseElseTriggered[$condition];
+
+        return $isIf || $isElse;
+    }
+
     /**
      * Execute a callable on the string.
      *
@@ -121,13 +172,12 @@ class StrHelper implements Countable
      */
     public function do($callable, ...$args)
     {
-        //nothing to do, false condition was triggered here too
-        if ($this->falseIfTriggered || $this->falseElseTriggered) {
+        if($this->skipIfTriggered() && ! $this->insideIfCondition){
             return $this;
         }
 
         if ($callable instanceof \Closure) {
-            //anonymose
+            //anonymous
 
             $callable = $callable->bindTo($this);
             $result = ($callable->bindTo($this))($this->currentString);
@@ -164,11 +214,24 @@ class StrHelper implements Countable
                 $result = $callable();
             }
         } else {
-            throw new \InvalidArgumentException('Method (do) can only receive anonymous functions or regular (bulit-in/global) functions!');
+            throw new \InvalidArgumentException('Method (do) can only receive anonymous functions or regular (built-in/global) functions!');
         }
 
-        if (gettype($result) !== 'string') {
-            return is_array($result) ? new Collection($result) : $result;
+        if (
+            gettype($result) !== 'string' && 
+            ! (isset($this->isIf[$this->conditionDepth]) && $this->isIf[$this->conditionDepth]) &&
+            ! (isset($this->isElse[$this->conditionDepth]) && $this->isElse[$this->conditionDepth])
+        ) {
+
+            if (is_array($result) && class_exists('\\Illuminate\\Support\\Collection')) {
+               return new \Illuminate\Support\Collection($result);
+            }
+
+            return $result;
+        }
+
+        if ($this->insideIfCondition) {
+            return $result;
         }
 
         $this->currentString = $result;
@@ -186,19 +249,31 @@ class StrHelper implements Countable
      */
     public function if($callable, ...$args)
     {
-        $this->falseIfTriggered = false;
+        $this->conditionDepth++;
+
+        $this->falseIfTriggered[$this->conditionDepth] = false;
+        $this->falseElseTriggered[$this->conditionDepth] = false;
+        $this->isIf[$this->conditionDepth] = true;
+        $this->isElse[$this->conditionDepth] = false;
 
         $lastString = $this->currentString;
 
+        $this->insideIfCondition = true;
+        
         $result = $this->do($callable, ...$args);
 
         if ($result instanceof self && strcmp($lastString, $this->currentString) === 0) {
-            $this->falseIfTriggered = true;
+            $this->falseIfTriggered[$this->conditionDepth] = true;
+        } elseif (gettype($result) && strcmp($lastString, $result) === 0) {
+             $this->falseIfTriggered[$this->conditionDepth] = true;
         } elseif ($result instanceof \Traversable && count($result) == 0) {
-            $this->falseIfTriggered = true;
+            $this->falseIfTriggered[$this->conditionDepth] = true;
         } elseif ($result === false) {
-            $this->falseIfTriggered = true;
+            $this->falseIfTriggered[$this->conditionDepth] = true;
         }
+
+        $this->insideIfCondition = false;
+
 
         return $this;
     }
@@ -210,9 +285,15 @@ class StrHelper implements Countable
      */
     public function endif()
     {
-        $this->falseIfTriggered = false;
-        $this->falseElseTriggered = false;
+        unset(
+            $this->falseIfTriggered[$this->conditionDepth],
+            $this->falseElseTriggered[$this->conditionDepth],
+            $this->isIf[$this->conditionDepth],
+            $this->isElse[$this->conditionDepth]
+        );
 
+        $this->conditionDepth--;
+ 
         return $this;
     }
 
@@ -223,11 +304,14 @@ class StrHelper implements Countable
      */
     public function else()
     {
-        if (!$this->falseIfTriggered) {
-            $this->falseElseTriggered = true;
+        $this->isIf[$this->conditionDepth] = false;
+        $this->isElse[$this->conditionDepth] = true;
+
+        if (! $this->falseIfTriggered[$this->conditionDepth]) {
+            $this->falseElseTriggered[$this->conditionDepth] = true;
         }
 
-        $this->falseIfTriggered = false;
+        $this->falseIfTriggered[$this->conditionDepth] = false;
 
         return $this;
     }
