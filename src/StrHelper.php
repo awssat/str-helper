@@ -86,7 +86,7 @@ use Countable;
  * @method mixed|\Awssat\StrHelper\StrHelper substr_replace(mixed $replacement, mixed $start [,mixed $length])
  * @method \Awssat\StrHelper\StrHelper substr(int $start [,int $length])
  * @method \Awssat\StrHelper\StrHelper ucfirst()
- * @method \Awssat\StrHelper\StrHelper wordwrap([int $width [,string $break [,bool $cut]]]) 
+ * @method \Awssat\StrHelper\StrHelper wordwrap([int $width [,string $break [,bool $cut]]])
  */
 class StrHelper implements Countable
 {
@@ -99,13 +99,13 @@ class StrHelper implements Countable
     protected $insideIfCondition = false;
 
     protected $aliasMethods = [
-        'lower' => 'strtolower',
-        'upper' => 'strtoupper',
-        'parse' => 'parse_str',
-        'length' => 'strlen',
+        'lower'      => 'strtolower',
+        'upper'      => 'strtoupper',
+        'parse'      => 'parse_str',
+        'length'     => 'strlen',
         'capitalize' => 'ucfirst',
-        'slice' => 'substr',
-        'index' => 'strpos',
+        'slice'      => 'substr',
+        'index'      => 'strpos',
     ];
 
     /**
@@ -128,7 +128,7 @@ class StrHelper implements Countable
      */
     public function __call($methodName, $arguments)
     {
-        if(array_key_exists($methodName, $this->aliasMethods)) {
+        if (array_key_exists($methodName, $this->aliasMethods)) {
             $methodName = $this->aliasMethods[$methodName];
         }
 
@@ -151,10 +151,10 @@ class StrHelper implements Countable
         $snake_method_name = strtolower(preg_replace('/([a-z]{1})([A-Z]{1})/', '$1_$2', $methodName));
 
         if (in_array($snake_method_name, ['parse_str', 'strlen', 'equal', 'contains', 'append', 'prepend'])) {
-
             return $this->do(function () use ($snake_method_name, $arguments) {
                 if ($snake_method_name === 'parse_str') {
                     parse_str($this->currentString, $result);
+
                     return $result;
                 } elseif ($snake_method_name === 'strlen') {
                     return $this->count();
@@ -163,16 +163,14 @@ class StrHelper implements Countable
                 } elseif ($snake_method_name === 'contains' && isset($arguments[0])) {
                     return strpos($this->currentString, $arguments[0]) !== false;
                 } elseif ($snake_method_name === 'append' && isset($arguments[0])) {
-                    return $this->currentString . $arguments[0];
+                    return $this->currentString.$arguments[0];
                 } elseif ($snake_method_name === 'prepend' && isset($arguments[0])) {
-                    return  $arguments[0] . $this->currentString;
+                    return  $arguments[0].$this->currentString;
                 }
             });
-
-        } else if (function_exists($snake_method_name)) {
+        } elseif (function_exists($snake_method_name)) {
             // Regular functions -> do(methodName, ...)
             return $this->do($snake_method_name, ...$arguments);
-    
         } else {
             // Couldn't find either?
             throw new \BadMethodCallException('Method ('.$methodName.') does not exist!');
@@ -269,7 +267,6 @@ class StrHelper implements Countable
             } elseif ($result === null) {
                 return $this;
             }
-
         } elseif (function_exists($callable)) {
             //regular functions
 
@@ -297,13 +294,13 @@ class StrHelper implements Countable
                 $result = $callable();
             }
         } else {
-            if(function_exists('str_'.$callable)) {
+            if (function_exists('str_'.$callable)) {
                 return $this->do($callable, ...$args);
             }
+
             throw new \InvalidArgumentException('Method (do) can only receive anonymous functions or regular (built-in/global) functions!');
         }
 
-        
         if (
             gettype($result) !== 'string' &&
             !(isset($this->isIf[$this->conditionDepth]) && $this->isIf[$this->conditionDepth]) &&
@@ -418,7 +415,7 @@ class StrHelper implements Countable
      */
     public function count()
     {
-        if(function_exists('mb_strlen')) {
+        if (function_exists('mb_strlen')) {
             return mb_strlen($this->currentString);
         }
 
