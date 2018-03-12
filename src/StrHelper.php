@@ -154,18 +154,29 @@ class StrHelper implements Countable
             return $this->do(function () use ($snake_method_name, $arguments) {
                 if ($snake_method_name === 'parse_str') {
                     parse_str($this->currentString, $result);
-
                     return $result;
                 } elseif ($snake_method_name === 'strlen') {
                     return $this->count();
-                } elseif ($snake_method_name === 'equal' && isset($arguments[0])) {
-                    return $this->currentString === $arguments[0];
-                } elseif ($snake_method_name === 'contains' && isset($arguments[0])) {
-                    return strpos($this->currentString, $arguments[0]) !== false;
-                } elseif ($snake_method_name === 'append' && isset($arguments[0])) {
-                    return $this->currentString.$arguments[0];
-                } elseif ($snake_method_name === 'prepend' && isset($arguments[0])) {
-                    return  $arguments[0].$this->currentString;
+                } elseif ($snake_method_name === 'equal' && sizeof($arguments)) {
+                    foreach($arguments as $arg) {
+                        if($this->currentString !== $arg) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                } elseif ($snake_method_name === 'contains' && sizeof($arguments)) {
+                    foreach ($arguments as $arg) {
+                        if (strpos($this->currentString, $arg) === false) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                } elseif ($snake_method_name === 'append') {
+                    return $this->currentString.implode('', $arguments);
+                } elseif ($snake_method_name === 'prepend') {
+                    return  implode('', $arguments).$this->currentString;
                 }
             });
         } elseif (function_exists($snake_method_name)) {
