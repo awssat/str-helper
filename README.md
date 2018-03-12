@@ -30,13 +30,13 @@ str('Hi Hello')->strReplace(' ', '-');
 
 
 ```bash
-str('Hi Hello')->camel()->finish('::')->replaceLast(':', 'Z');
->> hiHello:Z
+str('Hi Hello')->prepend('[')->append(']');
+>> [Hi Hello]
 ```
 
 In case you want an explicit string value for conditions, use "get":
 ```bash
-if(str('Hi')->strtolower->get() == 'hi'){ echo 'yes'; }
+if(str('Hi')->lower->get() == 'hi'){ echo 'yes'; }
 >> yes
 ```
 
