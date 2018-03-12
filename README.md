@@ -5,19 +5,12 @@
 [![Build Status](https://img.shields.io/travis/awssat/str-helper/master.svg?style=flat-square)](https://travis-ci.org/awssat/str-helper)
 
 
-⚡️  A flexible, simple & yet powerful string manipulation helper for PHP. It gives you the magic of method chaining and it's easier and shorter to be included in views. It Supports most of [PHP built-in strings functions](http://php.net/manual/en/book.strings.php) (and any custom functions).
+⚡️  A flexible, simple & yet powerful string manipulation helper for PHP. It gives you the magic of method chaining and it's easier and shorter to be included in views. It Supports most of [PHP built-in strings functions](http://php.net/manual/en/book.strings.php) (and other useful methods like: contains, equal, append, prepend ...).
 
 
 ```php
-str('Hi World')->strReplace(' ', '+')->strtolower()
+str('Hi World')->replace(' ', '+')->lower()
 ```
-
-
-<p align="center">
-  <img width="500"" src="https://pbs.twimg.com/media/DPBjIqdWAAEvZcA.png">
-</p>
-
-
 
 ## Install/Use
 You can install the package via composer locally in your project folder:
@@ -35,11 +28,6 @@ str('Hi Hello')->strReplace(' ', '-');
 >> hi-hello
 ```
 
-if used with Laravel, you could use its string helpers:
-```bash
-str('Hi Hello')->slug()->limit(2)->contains('l');
->> false
-```
 
 ```bash
 str('Hi Hello')->camel()->finish('::')->replaceLast(':', 'Z');
@@ -55,7 +43,7 @@ if(str('Hi')->strtolower->get() == 'hi'){ echo 'yes'; }
 
 There is a "tap" method:
 ```bash
-str('LINK.COM')->tap(function($v){ exit($v); })->lower()
+str('LINK.COM')->tap(function($v){ var_dump($v); })->lower()
 >> LINK.COM
 ```
 
@@ -74,22 +62,14 @@ str('<a>link.com</a>')->do(function(){
 >> link.com/
 ```
 
-If used with Laravel, Any resulted array will be converted to a collection for convenience 
-```bash
-str('hellow|world')->explode('|')
-                ->each(function($item){
-                         echo '[' . $item . ']';
-                });
-
->> [hello][world]
-```
+you may notice using camelCase instead snake_case for method name works too.
 
 
 You can also use conditions, if(..), else(), endif()
 ```php
 str('<html>hi</html>')
-            ->ifStrpos('hi')
-            ->strtoupper();
+            ->ifContains('hi')
+            ->upper();
 >> <HTML>HI</HTML>       
 ```
 
@@ -100,7 +80,7 @@ str('<html>hi</html>')
             ->if(function(){
                     return $this->contains('hi');
             })
-            ->strtoupper();
+            ->upper();
 >> <HTML>HI</HTML>       
 ```
 

@@ -2,15 +2,14 @@
 
 namespace Awssat\StrHelper\Test;
 
-use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 
 class StrHelperTest extends TestCase
 {
     /** @test */
-    public function empty_str_return_an_instance_of_support_str()
+    public function empty_str_return_an_instance_of_awssat_str_helper()
     {
-        $this->assertEquals('Illuminate\Support\Str', \get_class(str()));
+        $this->assertEquals('Awssat\StrHelper\StrHelper', get_class(str()));
     }
 
     /** @test */
@@ -28,26 +27,26 @@ class StrHelperTest extends TestCase
     /** @test */
     public function str_can_take_objects_that_can_be_string()
     {
-        $this->assertEquals('x', new class() {
+        $this->assertEquals('x', str(new class() {
             public function __toString()
             {
                 return 'x';
             }
-        });
+        })->get());
     }
 
     /** @test */
     public function empty_str_object_type_is_valid()
     {
-        $this->assertEquals('Illuminate\Support\Str', get_class(str()));
+        $this->assertEquals('Awssat\StrHelper\StrHelper', get_class(str()));
     }
 
     /** @test */
     public function does_str_has_methods()
     {
         $this->assertTrue(
-                method_exists(get_class(str()), 'slug'),
-                'str()->slug() does not exist!'
+                method_exists(get_class(str()), 'count'),
+                'str()->count() does not exist!'
             );
     }
 
@@ -60,7 +59,7 @@ class StrHelperTest extends TestCase
     /** @test */
     public function str_check_methods_return_boolean()
     {
-        $this->assertTrue(str('hi')->upper()->is('HI'));
+        $this->assertTrue(str('hi')->upper()->equal('HI'));
     }
 
     /** @test */
@@ -169,15 +168,15 @@ class StrHelperTest extends TestCase
             $result[] = str($word)
                         ->ifContains('hi')
                             ->upper()
-                            ->finish(' you')
+                            ->append(' you.')
                         ->else()
                             ->lower()
-                            ->finish(' aboard')
+                            ->append(' aboard.')
                         ->endif()
-                        ->finish(' :)');
+                        ->prepend('User, ');
         }
 
-        $this->assertEquals('HI you :) welcome aboard :)', implode(' ', $result));
+        $this->assertEquals('User, HI you. User, welcome aboard.', implode(' ', $result));
     }
 
     /** @test */
@@ -207,17 +206,11 @@ class StrHelperTest extends TestCase
                 'explode' => [
                     'a b c d',
                      [' '],
-                     new Collection(['a', 'b', 'c', 'd']),
+                     ['a', 'b', 'c', 'd'],
                 ],
            ] as $func => $data) {
             $this->assertEquals($data[2], str($data[0])->{$func}(...$data[1]));
         }
-    }
-
-    /** @test */
-    public function str_return_collection_instead_of_array()
-    {
-        $this->assertEquals('Illuminate\Support\Collection', get_class(str('you|money|peach')->explode('|')));
     }
 
     /** @test */
@@ -237,6 +230,6 @@ class StrHelperTest extends TestCase
     /** @test */
     public function str_can_be_counted()
     {
-        $this->assertEquals(5, count(str('Nomad')->slug()));
+        $this->assertEquals(5, count(str('nomad')->capitalize()));
     }
 }
