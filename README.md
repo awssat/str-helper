@@ -37,14 +37,16 @@ str('Hi Hello')->prepend('[')->append(']');
 
 In case you want an explicit string value for conditions, use "get":
 ```bash
-if(str('Hi')->lower->get() == 'hi'){ echo 'yes'; }
+if(str('Hi')->lower->get() == 'hi') {
+        echo 'yes'; 
+}
 >> yes
 ```
 
 
 There is a "tap" method:
 ```bash
-str('LINK.COM')->tap(function($v){ var_dump($v); })->lower()
+str('LINK.COM')->tap(function($v){ print($v); })->lower()
 >> LINK.COM
 ```
 

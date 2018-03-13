@@ -184,9 +184,10 @@ class StrHelper implements Countable
                 }
             });
         } elseif (function_exists($snake_method_name)) {
-            if(function_exists('mb_chr') && function_exists('mb_'.$snake_method_name)) {
+            if(function_exists('mb_'.$snake_method_name)) {
                 $snake_method_name = 'mb_'.$snake_method_name;
             }
+
             // Regular functions -> do(methodName, ...)
             return $this->do($snake_method_name, ...$arguments);
         } else {
