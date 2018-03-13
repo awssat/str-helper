@@ -153,7 +153,9 @@ class StrHelper implements Countable
         if (in_array($snake_method_name, ['parse_str', 'strlen', 'equal', 'contains', 'append', 'prepend'])) {
             return $this->do(function () use ($snake_method_name, $arguments) {
                 if ($snake_method_name === 'parse_str') {
-                    parse_str($this->currentString, $result);
+                    $mb_parse_str = function_exists('mb_parse_str') ? 'mb_parse_str' : 'parse_str';
+
+                    $mb_parse_str($this->currentString, $result);
                     return $result;
                 } elseif ($snake_method_name === 'strlen') {
                     return $this->count();
@@ -167,7 +169,9 @@ class StrHelper implements Countable
                     return true;
                 } elseif ($snake_method_name === 'contains' && sizeof($arguments)) {
                     foreach ($arguments as $arg) {
-                        if (strpos($this->currentString, $arg) === false) {
+                        $mb_strpos = function_exists('mb_strpos') ? 'mb_strpos' : 'strpos';
+
+                        if ($mb_strpos($this->currentString, $arg) === false) {
                             return false;
                         }
                     }
@@ -180,6 +184,9 @@ class StrHelper implements Countable
                 }
             });
         } elseif (function_exists($snake_method_name)) {
+            if(function_exists('mb_chr') && function_exists('mb_'.$snake_method_name)) {
+                $snake_method_name = 'mb_'.$snake_method_name;
+            }
             // Regular functions -> do(methodName, ...)
             return $this->do($snake_method_name, ...$arguments);
         } else {

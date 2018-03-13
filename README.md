@@ -8,6 +8,7 @@
 ⚡️  A flexible, simple & yet powerful string manipulation helper for PHP. It gives you the magic of method chaining and it's easier and shorter to be included in views. It Supports most of [PHP built-in strings functions](http://php.net/manual/en/book.strings.php) (and other useful methods like: contains, equal, append, prepend ...).
 
 
+
 ```php
 str('Hi World')->replace(' ', '+')->lower()
 ```
@@ -62,7 +63,7 @@ str('<a>link.com</a>')->do(function(){
 >> link.com/
 ```
 
-you may notice using camelCase instead snake_case for method name works too.
+you may notice using camelCase instead of snake_case for method name works too.
 
 
 You can also use conditions, if(..), else(), endif()
@@ -84,6 +85,7 @@ str('<html>hi</html>')
 >> <HTML>HI</HTML>       
 ```
 
+__[UTF-8 Support] If mbstring library is installed and you call a strpos function, mb_strpos will be called instead.__
 
 
 ## Tests
