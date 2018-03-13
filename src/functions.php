@@ -2,7 +2,7 @@
 
 use Awssat\StrHelper\StrHelper;
 
-if (! function_exists('str')) {
+if (!function_exists('str')) {
     /**
      * A flexible & powerful string manipulation helper for PHP.
      *
