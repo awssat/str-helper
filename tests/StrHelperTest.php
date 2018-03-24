@@ -2,8 +2,8 @@
 
 namespace Awssat\StrHelper\Test;
 
-use PHPUnit\Framework\TestCase;
 use Awssat\StrHelper\StrHelper;
+use PHPUnit\Framework\TestCase;
 
 class StrHelperTest extends TestCase
 {
@@ -233,7 +233,6 @@ class StrHelperTest extends TestCase
     {
         $this->assertEquals(5, count(str('nomad')->capitalize()));
     }
-
 
     /** @test */
     public function str_methods_can_be_called_statically()
