@@ -118,6 +118,12 @@ class StrHelper implements Countable
         $this->currentString = (string) $value;
     }
 
+
+    static public function __callStatic($methodName, $arguments)
+    {
+        return (new static($arguments[0] ?? ''))->$methodName(array_slice($arguments, 1))->get(true);
+    }
+
     /**
      * The door to the magic.
      *
@@ -201,12 +207,13 @@ class StrHelper implements Countable
 
     /**
      * Get the processed string.
-     *
+     * 
+     * @param bool $force ignore conditions
      * @return string
      */
-    public function get()
+    public function get($force = false)
     {
-        if ($this->skipIfTriggered()) {
+        if ($this->skipIfTriggered() && ! $force) {
             return $this;
         }
 

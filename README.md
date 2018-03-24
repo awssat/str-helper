@@ -13,6 +13,11 @@
 str('Hi World')->replace(' ', '+')->lower()
 ```
 
+## Why use this instead of other string maniplulation packages ?
+This is a wrapper for PHP default string functions, to provide a very poweful method chaining and conditions. 
+You don't have to learn new methods names, just use PHP functions names that you know. 
+
+
 ## Install/Use
 You can install the package via composer locally in your project folder:
 
@@ -20,7 +25,8 @@ You can install the package via composer locally in your project folder:
 $ composer require awssat/str-helper
 ```
 
-After installing it, just start using the helper `str()`: 
+After installing it, just start using `StrHelper` class, or simply the helper function `str()`: 
+
 
 ## Examples
 
@@ -87,6 +93,16 @@ str('<html>hi</html>')
 >> <HTML>HI</HTML>       
 ```
 
+All methods are availabe to be called statically, as: 
+```php
+StrHelper::capitalize('life')
+```
+or using str() function.
+```php
+str()::capitalize('nomad')
+```
+
+
 __[UTF-8 Support] If mbstring library is installed and you call a strpos function, mb_strpos will be called instead.__
 
 
@@ -101,3 +117,4 @@ $ composer test
 
 ## License
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
