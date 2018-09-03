@@ -10,7 +10,7 @@
 
 
 ```php
-str('Hi World')->replace(' ', '+')->lower()
+str('Hi World')->replace(' ', '+')->lower();
 ```
 
 ## Why use this instead of other string maniplulation packages ?
@@ -52,7 +52,7 @@ if(str('Hi')->lower->get() == 'hi') {
 
 There is a "tap" method:
 ```bash
-str('LINK.COM')->tap(function($v){ print($v); })->lower()
+str('LINK.COM')->tap(function($v){ print($v); })->lower();
 >> LINK.COM
 ```
 
@@ -60,15 +60,15 @@ for callbacks use "do" method:
 ```bash
 str('<a>link.com</a>')->do(function($string){ 
         return strip_tags($string); 
-})
+});
 >> link.com
 ```
 or: 
 ```bash
 str('<a>link.com</a>')->do(function(){   
         $this->stripTags();
-})
->> link.com/
+});
+>> link.com
 ```
 
 you may notice using camelCase instead of snake_case for method name works too.
@@ -95,11 +95,11 @@ str('<html>hi</html>')
 
 All methods are availabe to be called statically, as: 
 ```php
-StrHelper::capitalize('life')
+StrHelper::capitalize('life');
 ```
 or using str() function.
 ```php
-str()::capitalize('nomad')
+str()::capitalize('nomad');
 ```
 
 
